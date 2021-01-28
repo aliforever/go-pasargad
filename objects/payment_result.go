@@ -1,4 +1,4 @@
-package pasargad
+package objects
 
 import "encoding/xml"
 

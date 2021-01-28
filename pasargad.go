@@ -1,8 +1,10 @@
-package pasargad
+package go_pasargad
 
 import (
 	"fmt"
 	"time"
+
+	"github.com/aliforever/go-pasargad/objects"
 
 	"net/url"
 
@@ -63,7 +65,7 @@ func (p *Pasargad) GeneratePayment(invoiceNumber, amount int, redirectUrl string
 	return
 }
 
-func (p *Pasargad) GetPaymentResult(invoiceNumber int) (pr *PaymentResult, err error) {
+func (p *Pasargad) GetPaymentResult(invoiceNumber int) (pr *objects.PaymentResult, err error) {
 	values := url.Values{}
 	values.Add("invoiceUID", fmt.Sprintf("%d", invoiceNumber))
 	req, err := http.Post("https://pep.shaparak.ir/CheckTransactionResult.aspx", "application/x-www-form-urlencoded", strings.NewReader(values.Encode()))
@@ -75,12 +77,12 @@ func (p *Pasargad) GetPaymentResult(invoiceNumber int) (pr *PaymentResult, err e
 	if err != nil {
 		return
 	}
-	pr = &PaymentResult{}
+	pr = &objects.PaymentResult{}
 	err = pr.Unmarshal(resp)
 	return
 }
 
-func (p *Pasargad) VerifyPayment(amount, invoiceNumber int, timeStr string) (vpr *VerifyPaymentResult, err error) {
+func (p *Pasargad) VerifyPayment(amount, invoiceNumber int, timeStr string) (vpr *objects.VerifyPaymentResult, err error) {
 	loc, _ := time.LoadLocation("Asia/Tehran")
 	timeNow := time.Now().In(loc).Format("2006-01-02 15:04:05")
 	values := url.Values{}
@@ -107,7 +109,7 @@ func (p *Pasargad) VerifyPayment(amount, invoiceNumber int, timeStr string) (vpr
 	if err != nil {
 		return
 	}
-	vpr = &VerifyPaymentResult{}
+	vpr = &objects.VerifyPaymentResult{}
 	err = vpr.Unmarshal(res)
 	return
 }
